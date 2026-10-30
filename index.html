@@ -1,0 +1,2677 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>BailleurPro — L'application de gestion locative pour bailleurs d'Afrique francophone</title>
+  <meta name="description" content="Gérez vos loyers en FCFA, calculez l'électricité et l'eau des sous-compteurs en 1 clic et envoyez vos quittances sur WhatsApp. Conçu spécialement pour smartphone Android.">
+  <meta name="theme-color" content="#1E40AF">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231E40AF'/><path d='M8 22V12l8-5 8 5v10H8z' fill='%23EFF6FF'/><path d='M13 22v-6h6v6h-6z' fill='%232563EB'/></svg>">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       VARIABLES & DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --primary: #1E40AF;          /* Bleu principal */
+      --primary-vibrant: #2563EB;    /* Bleu vif */
+      --bg-light: #EFF6FF;          /* Fond bleu très clair */
+      --text-main: #0F172A;         /* Texte sombre haute lisibilité */
+      --text-muted: #475569;        /* Texte secondaire */
+      --text-light: #64748B;
+      --card-bg: #FFFFFF;
+      --border-light: #DBEAFE;
+      --border-subtle: #E2E8F0;
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --danger: #DC2626;
+      --danger-bg: #FEF2F2;
+      --warning: #D97706;
+      --warning-bg: #FFFBEB;
+      --shadow-sm: 0 2px 8px rgba(30, 64, 175, 0.06);
+      --shadow-md: 0 10px 25px -5px rgba(30, 64, 175, 0.08), 0 8px 10px -6px rgba(30, 64, 175, 0.04);
+      --shadow-lg: 0 20px 35px -10px rgba(30, 64, 175, 0.12), 0 10px 15px -5px rgba(30, 64, 175, 0.05);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      background-color: #FFFFFF;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 {
+      color: var(--text-main);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       BOUTONS FLOTTANTS DANS LES ANGLES DU HAUT (NON FIXES)
+       ========================================================================== */
+    .floating-top-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 1.5rem 1.75rem;
+      pointer-events: none; /* Clics traversent l'espace vide */
+    }
+
+    .floating-header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Angle haut gauche : Logo dans une pastille arrondie */
+    .logo-pastille {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: #FFFFFF;
+      padding: 0.45rem 1.15rem 0.45rem 0.6rem;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 16px rgba(30, 64, 175, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-light);
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 44px;
+    }
+
+    .logo-pastille:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(30, 64, 175, 0.14);
+    }
+
+    .logo-badge-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-vibrant) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .logo-text span {
+      color: var(--primary-vibrant);
+    }
+
+    /* Angle haut droite : Boutons (Desktop) */
+    .nav-actions-right {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-login {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.5rem 1.35rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-login:hover {
+      background: var(--bg-light);
+      border-color: #BFDBFE;
+      color: var(--primary-vibrant);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 44px;
+      padding: 0.5rem 1.45rem;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--primary-vibrant);
+      border: 1px solid transparent;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary-pill:hover {
+      background: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(30, 64, 175, 0.35);
+    }
+
+    /* Bouton Hamburger sur mobile (Angle haut droite) */
+    .mobile-menu-btn {
+      pointer-events: auto;
+      display: none;
+      width: 44px;
+      height: 44px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-menu-btn:hover {
+      background: var(--bg-light);
+    }
+
+    .mobile-menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .mobile-menu-btn.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .mobile-menu-btn.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-menu-btn.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Menu déroulant mobile */
+    .mobile-drawer {
+      pointer-events: auto;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      left: 0;
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      flex-direction: column;
+      gap: 0.85rem;
+      animation: slideDown 0.25s ease forwards;
+    }
+
+    .mobile-drawer.open {
+      display: flex;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: background-color 0.15s ease;
+      min-height: 44px;
+    }
+
+    .mobile-nav-link:hover {
+      background-color: var(--bg-light);
+      color: var(--primary-vibrant);
+    }
+
+    .mobile-drawer-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ==========================================================================
+       SECTION 1: ACCUEIL (HERO)
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(180deg, var(--bg-light) 0%, #FFFFFF 100%);
+      padding-top: 7.5rem;
+      padding-bottom: 5rem;
+      overflow: hidden;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Cercles concentriques & orbites inspirés de la référence SaaS épurée */
+    .hero-orbits-bg {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1200px;
+      height: 1200px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(37, 99, 235, 0.08);
+    }
+
+    .orbit-1 { width: 440px; height: 440px; }
+    .orbit-2 { width: 720px; height: 720px; border-style: dashed; border-color: rgba(37, 99, 235, 0.09); }
+    .orbit-3 { width: 1000px; height: 1000px; }
+    .orbit-4 { width: 1260px; height: 1260px; border-style: dashed; border-color: rgba(37, 99, 235, 0.05); }
+
+    /* Pastilles flottantes d'atouts (Contexte locatif africain) */
+    .orbit-pill {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-main);
+      box-shadow: 0 8px 20px rgba(30, 64, 175, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      z-index: 3;
+      white-space: nowrap;
+      animation: floatBadge 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatBadge {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-8px); }
+    }
+
+    .orbit-pill.pos-1 { top: 12%; left: 8%; animation-delay: 0s; }
+    .orbit-pill.pos-2 { top: 14%; right: 7%; animation-delay: 1.5s; }
+    .orbit-pill.pos-3 { top: 48%; left: 4%; animation-delay: 2.2s; }
+    .orbit-pill.pos-4 { top: 46%; right: 4%; animation-delay: 3.1s; }
+    .orbit-pill.pos-5 { bottom: 12%; left: 10%; animation-delay: 0.8s; }
+    .orbit-pill.pos-6 { bottom: 14%; right: 9%; animation-delay: 2.5s; }
+
+    .orbit-pill-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Tag de réassurance */
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      padding: 0.4rem 1.15rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4.2vw, 3.5rem);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-title .highlight-blue {
+      color: var(--primary-vibrant);
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2.25rem;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 48px;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--primary-vibrant);
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-hero-primary:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(30, 64, 175, 0.4);
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 48px;
+      padding: 0.75rem 1.85rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-hero-secondary:hover {
+      background: var(--bg-light);
+      border-color: #BFDBFE;
+      color: var(--primary-vibrant);
+      transform: translateY(-2px);
+    }
+
+    /* Ligne de réassurance sans chiffres inventés */
+    .hero-reassurance-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    .reassurance-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .reassurance-item svg {
+      color: var(--primary-vibrant);
+      flex-shrink: 0;
+    }
+
+    /* Mockup Smartphone Android avec Capture d'écran BailleurPro */
+    .hero-device-wrapper {
+      position: relative;
+      max-width: 440px;
+      margin: 0 auto;
+      z-index: 10;
+    }
+
+    .hero-device-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, rgba(239, 246, 255, 0) 70%);
+      filter: blur(40px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .android-phone-frame {
+      background: #0F172A;
+      border-radius: 44px;
+      padding: 10px;
+      box-shadow: 0 25px 60px -15px rgba(30, 64, 175, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 8px 16px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .android-phone-frame:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Barre de statut Android */
+    .android-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 18px 4px 18px;
+      background: #FFFFFF;
+      color: #0F172A;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-top-left-radius: 34px;
+      border-top-right-radius: 34px;
+      position: relative;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .android-camera-punch {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 11px;
+      height: 11px;
+      background: #0F172A;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Conteneur d'image */
+    .phone-screen-container {
+      background: #FFFFFF;
+      overflow: hidden;
+      position: relative;
+      cursor: zoom-in;
+    }
+
+    .app-screen-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      vertical-align: middle;
+    }
+
+    /* Barre de navigation gestuelle Android */
+    .android-bottom-bar {
+      background: #FFFFFF;
+      padding: 6px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom-left-radius: 34px;
+      border-bottom-right-radius: 34px;
+    }
+
+    .android-gesture-pill {
+      width: 72px;
+      height: 4px;
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+
+    /* Callouts interactifs autour du téléphone */
+    .floating-callout {
+      position: absolute;
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      box-shadow: var(--shadow-md);
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.8125rem;
+      animation: floatBadge 5s ease-in-out infinite alternate;
+      cursor: pointer;
+    }
+
+    .floating-callout.left-callout {
+      left: -55px;
+      top: 25%;
+      animation-delay: 1s;
+    }
+
+    .floating-callout.right-callout {
+      right: -55px;
+      top: 62%;
+      animation-delay: 2.2s;
+    }
+
+    .callout-badge-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .callout-badge-icon.green {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .callout-badge-icon.blue {
+      background: var(--bg-light);
+      color: var(--primary-vibrant);
+    }
+
+    .callout-text strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 0.8125rem;
+      line-height: 1.2;
+    }
+
+    .callout-text span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* Indication zoom */
+    .zoom-hint-pill {
+      margin-top: 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #FFFFFF;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-light);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .zoom-hint-pill:hover {
+      background: var(--bg-light);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       TITRES DE SECTION COMMUNS
+       ========================================================================== */
+    .section {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 3.5rem auto;
+    }
+
+    .section-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      padding: 0.35rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+
+    .section-subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       SECTION 2: COMMENT ÇA MARCHE
+       ========================================================================== */
+    .how-it-works-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      position: relative;
+    }
+
+    .step-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 1.85rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: #BFDBFE;
+    }
+
+    .step-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-badge-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      color: var(--primary-vibrant);
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+    }
+
+    .step-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .step-highlight {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-light);
+      border-radius: var(--radius-sm);
+      margin-top: auto;
+    }
+
+    /* Simulateur interactif de sous-compteur */
+    .simulator-wrapper {
+      margin-top: 3.5rem;
+      background: linear-gradient(135deg, #F8FAFC 0%, var(--bg-light) 100%);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .simulator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .simulator-title-group h3 {
+      font-size: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .simulator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      align-items: end;
+    }
+
+    .sim-input-group label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+
+    .sim-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.65rem 0.95rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      color: var(--text-main);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .sim-input:focus {
+      outline: none;
+      border-color: var(--primary-vibrant);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .sim-result-card {
+      background: #FFFFFF;
+      border: 2px solid var(--primary-vibrant);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    .sim-result-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sim-result-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    /* ==========================================================================
+       SECTION 3: FONCTIONNALITÉS (6 CARTES)
+       ========================================================================== */
+    .features-section {
+      background-color: #FAFCFF;
+      border-top: 1px solid #F1F5F9;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+
+    .feature-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 1.85rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: #BFDBFE;
+    }
+
+    .feature-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      color: var(--primary-vibrant);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .feature-card:hover .feature-icon-box {
+      background: var(--primary-vibrant);
+      color: #FFFFFF;
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+    }
+
+    .feature-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       SECTION 4: OFFRES (TARIFS - 3 CARTES)
+       ========================================================================== */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Carte Standard Recommandée */
+    .pricing-card.recommended {
+      border: 2px solid var(--primary-vibrant);
+      box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.16);
+      transform: scale(1.02);
+    }
+
+    .pricing-card.recommended:hover {
+      transform: scale(1.02) translateY(-4px);
+      box-shadow: 0 20px 45px -5px rgba(37, 99, 235, 0.22);
+    }
+
+    .recommended-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-vibrant);
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 1.15rem;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .pricing-plan-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-plan-scope {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      background: var(--bg-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+    }
+
+    .pricing-price-box {
+      margin-bottom: 2rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .pricing-price-amount {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    .pricing-price-period {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+
+    .pricing-features-list {
+      list-style: none;
+      margin-bottom: 2.25rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .pricing-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .pricing-feature-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--primary-vibrant);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Boutons des cartes de prix */
+    .btn-pricing-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-pricing-secondary:hover {
+      background: var(--bg-light);
+      border-color: #BFDBFE;
+      color: var(--primary-vibrant);
+    }
+
+    .btn-pricing-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--primary-vibrant);
+      border: 1px solid transparent;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-pricing-primary:hover {
+      background: var(--primary);
+      box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+    }
+
+    /* ==========================================================================
+       SECTION 5: TÉMOIGNAGES (3 AVIS D'EXEMPLE)
+       ========================================================================== */
+    .testimonials-section {
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--bg-light) 100%);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .testimonial-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .testimonial-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .testimonial-stars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #F59E0B;
+    }
+
+    /* Mention EXEMPLE obligatoire */
+    .badge-example-tag {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .testimonial-quote {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+      flex-grow: 1;
+      font-style: italic;
+    }
+
+    .testimonial-author-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid #F1F5F9;
+    }
+
+    .author-avatar-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .author-info h4 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.15rem;
+    }
+
+    .author-info p {
+      font-size: 0.8125rem;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+
+    /* ==========================================================================
+       SECTION 6: APPEL À L'ACTION FINAL (CTA)
+       ========================================================================== */
+    .cta-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-vibrant) 100%);
+      border-radius: var(--radius-lg);
+      padding: 4.5rem 2.5rem;
+      text-align: center;
+      color: #FFFFFF;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px -10px rgba(30, 64, 175, 0.4);
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255) 0%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+    }
+
+    .cta-card::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.025em;
+    }
+
+    .cta-desc {
+      font-size: 1.125rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2.25rem;
+      line-height: 1.6;
+    }
+
+    .btn-cta-white {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 48px;
+      padding: 0.85rem 2.25rem;
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: #FFFFFF;
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-cta-white:hover {
+      background: var(--bg-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    .cta-micro-features {
+      margin-top: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* ==========================================================================
+       SECTION 7: FOOTER
+       ========================================================================== */
+    .site-footer {
+      background: #0B1329;
+      color: #94A3B8;
+      padding-top: 4.5rem;
+      padding-bottom: 3rem;
+      border-top: 1px solid #1E293B;
+    }
+
+    .footer-top-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .footer-brand p {
+      color: #94A3B8;
+      font-size: 0.9375rem;
+      margin-top: 1rem;
+      max-width: 340px;
+      line-height: 1.6;
+    }
+
+    .footer-heading {
+      color: #FFFFFF;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-links-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-link {
+      color: #94A3B8;
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color 0.15s ease;
+      min-height: 24px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .footer-link:hover {
+      color: #FFFFFF;
+    }
+
+    /* Carte WhatsApp Footer */
+    .footer-whatsapp-card {
+      background: #132247;
+      border: 1px solid #1E3A8A;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+
+    .footer-whatsapp-card p {
+      color: #E2E8F0;
+      font-size: 0.875rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .btn-whatsapp-footer {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 44px;
+      width: 100%;
+      padding: 0.65rem 1.15rem;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: #25D366;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-whatsapp-footer:hover {
+      background: #20BA5C;
+      transform: translateY(-1px);
+    }
+
+    .footer-bottom-bar {
+      padding-top: 2rem;
+      border-top: 1px solid #1E293B;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: #64748B;
+    }
+
+    /* ==========================================================================
+       MODALS
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.25rem;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      animation: modalScale 0.25s ease forwards;
+    }
+
+    .modal-dialog.modal-dialog-large {
+      max-width: 800px;
+    }
+
+    @keyframes modalScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #F1F5F9;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: #E2E8F0;
+      color: var(--text-main);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0.75rem 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      color: var(--text-main);
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary-vibrant);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .modal-legal-body {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .modal-legal-body h4 {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin-top: 1.25rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Vue agrandie lightbox */
+    .lightbox-img-wrapper {
+      text-align: center;
+      background: #F8FAFC;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      border: 1px solid var(--border-light);
+    }
+
+    .lightbox-img-wrapper img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      display: inline-block;
+    }
+
+    /* ==========================================================================
+       ANIMATIONS AU DÉFILEMENT (IntersectionObserver)
+       ========================================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      .orbit-pill {
+        animation: none !important;
+      }
+    }
+
+    /* ==========================================================================
+       RESPONSIVE DESIGN (Mobile First / Android)
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .how-it-works-grid,
+      .features-grid,
+      .pricing-grid,
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pricing-card.recommended {
+        transform: none;
+      }
+      .pricing-card.recommended:hover {
+        transform: translateY(-4px);
+      }
+      .orbit-pill.pos-3, .orbit-pill.pos-4 {
+        display: none;
+      }
+      .footer-top-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .floating-top-header {
+        padding: 1rem 1rem;
+      }
+      .nav-actions-right {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: flex;
+      }
+      .hero-section {
+        padding-top: 6rem;
+        padding-bottom: 3.5rem;
+      }
+      .how-it-works-grid,
+      .features-grid,
+      .pricing-grid,
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+      .orbit-pill {
+        display: none;
+      }
+      .hero-orbits-bg {
+        width: 600px;
+        height: 600px;
+      }
+      .floating-callout {
+        display: none;
+      }
+      .footer-top-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .cta-card {
+        padding: 3rem 1.5rem;
+      }
+      .simulator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       BOUTONS FLOTTANTS DANS LES ANGLES DU HAUT (NON FIXES)
+       ========================================================================== -->
+  <header class="floating-top-header">
+    <div class="floating-header-inner">
+      <!-- Angle haut gauche : Logo « BailleurPro » dans une pastille arrondie -->
+      <a href="#" class="logo-pastille" aria-label="BailleurPro - Accueil">
+        <div class="logo-badge-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"></path>
+            <path d="M5 21V7l7-4 7 4v14"></path>
+            <path d="M9 10h1"></path>
+            <path d="M9 14h1"></path>
+            <path d="M14 10h1"></path>
+            <path d="M14 14h1"></path>
+            <path d="M11 21v-3a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v3"></path>
+          </svg>
+        </div>
+        <div class="logo-text">Bailleur<span>Pro</span></div>
+      </a>
+
+      <!-- Angle haut droite : Bouton « Se connecter » (secondaire) et bouton « Commencer gratuitement » (principal) -->
+      <div class="nav-actions-right">
+        <button type="button" class="btn-login" onclick="openModal('loginModal')">
+          Se connecter
+        </button>
+        <button type="button" class="btn-primary-pill" onclick="openModal('signupModal')">
+          <span>Commencer gratuitement</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Sur mobile : Bouton menu (3 traits) à droite, qui ouvre et ferme un menu -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Menu déroulant mobile -->
+      <div class="mobile-drawer" id="mobileDrawer">
+        <a href="#accueil" class="mobile-nav-link" onclick="closeMobileMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          Accueil
+        </a>
+        <a href="#comment-ca-marche" class="mobile-nav-link" onclick="closeMobileMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Comment ça marche
+        </a>
+        <a href="#fonctionnalites" class="mobile-nav-link" onclick="closeMobileMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Fonctionnalités
+        </a>
+        <a href="#offres" class="mobile-nav-link" onclick="closeMobileMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Offres & Tarifs
+        </a>
+        <a href="#temoignages" class="mobile-nav-link" onclick="closeMobileMenu()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Témoignages
+        </a>
+        <div class="mobile-drawer-buttons">
+          <button type="button" class="btn-login" style="width: 100%;" onclick="closeMobileMenu(); openModal('loginModal')">
+            Se connecter
+          </button>
+          <button type="button" class="btn-primary-pill" style="width: 100%;" onclick="closeMobileMenu(); openModal('signupModal')">
+            Commencer gratuitement
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       SECTION 1: ACCUEIL (HERO)
+       ========================================================================== -->
+  <section class="hero-section" id="accueil">
+    <!-- Cercles concentriques inspirés de la référence SaaS épurée -->
+    <div class="hero-orbits-bg" aria-hidden="true">
+      <div class="orbit-ring orbit-1"></div>
+      <div class="orbit-ring orbit-2"></div>
+      <div class="orbit-ring orbit-3"></div>
+      <div class="orbit-ring orbit-4"></div>
+    </div>
+
+    <!-- Pastilles flottantes d'atouts -->
+    <div class="orbit-pill pos-1">
+      <span class="orbit-pill-icon">⚡</span>
+      <span>Calcul sous-compteurs kWh</span>
+    </div>
+    <div class="orbit-pill pos-2">
+      <span class="orbit-pill-icon">💬</span>
+      <span>Relance WhatsApp en 1 clic</span>
+    </div>
+    <div class="orbit-pill pos-3">
+      <span class="orbit-pill-icon">🧾</span>
+      <span>Quittances PDF conformes</span>
+    </div>
+    <div class="orbit-pill pos-4">
+      <span class="orbit-pill-icon">💰</span>
+      <span>Suivi direct en FCFA</span>
+    </div>
+    <div class="orbit-pill pos-5">
+      <span class="orbit-pill-icon">📱</span>
+      <span>Application Android fluide</span>
+    </div>
+    <div class="orbit-pill pos-6">
+      <span class="orbit-pill-icon">💧</span>
+      <span>Partage facture d'eau</span>
+    </div>
+
+    <div class="container">
+      <div class="hero-content reveal">
+        <!-- Tag rassurant -->
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Conçu pour les bailleurs d'Afrique francophone
+        </div>
+
+        <!-- Titre accrocheur sur le bénéfice -->
+        <h1 class="hero-title">
+          Gérez vos loyers, eau et électricité <span class="highlight-blue">en toute sérénité</span> depuis votre téléphone.
+        </h1>
+
+        <!-- Sous-titre clair en une phrase -->
+        <p class="hero-subtitle">
+          L'application tout-en-un qui calcule vos sous-compteurs sans erreur, suit vos encaissements en FCFA et envoie vos quittances sur WhatsApp en quelques secondes.
+        </p>
+
+        <!-- Boutons d'action Hero -->
+        <div class="hero-cta-group">
+          <button type="button" class="btn-hero-primary" onclick="openModal('signupModal')">
+            <span>Commencer gratuitement</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+          <a href="#comment-ca-marche" class="btn-hero-secondary">
+            Comment ça marche
+          </a>
+        </div>
+
+        <!-- Réassurance sans chiffres inventés -->
+        <div class="hero-reassurance-row">
+          <div class="reassurance-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Essai gratuit 30 jours</span>
+          </div>
+          <div class="reassurance-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Sans engagement ni carte bancaire</span>
+          </div>
+          <div class="reassurance-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Optimisé pour smartphone Android</span>
+          </div>
+        </div>
+
+        <!-- Mockup Smartphone Android avec Capture d'écran BailleurPro -->
+        <div class="hero-device-wrapper">
+          <!-- Callout flottant gauche -->
+          <div class="floating-callout left-callout" onclick="openModal('lightboxModal')">
+            <div class="callout-badge-icon green">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="callout-text">
+              <strong>Taux de recouvrement</strong>
+              <span>Suivi en direct du mois</span>
+            </div>
+          </div>
+
+          <!-- Callout flottant droite -->
+          <div class="floating-callout right-callout" onclick="openModal('lightboxModal')">
+            <div class="callout-badge-icon blue">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="callout-text">
+              <strong>Relance WhatsApp</strong>
+              <span>1 clic pour alerter le locataire</span>
+            </div>
+          </div>
+
+          <!-- Cadre de Smartphone Android -->
+          <div class="android-phone-frame">
+            <!-- Barre de statut Android -->
+            <div class="android-status-bar">
+              <span>09:41</span>
+              <div class="android-camera-punch" title="Caméra frontale Android"></div>
+              <div class="status-icons">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.79-1.79C9.09 19.67 10.49 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+              </div>
+            </div>
+
+            <!-- Écran avec Capture fournie -->
+            <div class="phone-screen-container" onclick="openModal('lightboxModal')" title="Cliquez pour agrandir la capture">
+              <img src="bailleurpro-app-screenshot.jpg" 
+                   alt="Capture de l'application BailleurPro montrant le tableau de bord avec loyers et charges" 
+                   class="app-screen-img"
+                   id="mainAppScreenshot">
+            </div>
+
+            <!-- Barre gestuelle Android -->
+            <div class="android-bottom-bar">
+              <div class="android-gesture-pill"></div>
+            </div>
+          </div>
+
+          <div class="zoom-hint-pill" onclick="openModal('lightboxModal')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            <span>Toucher pour agrandir la capture d'écran</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 2: COMMENT ÇA MARCHE (3 ÉTAPES NUMÉROTÉES)
+       ========================================================================== -->
+  <section class="section" id="comment-ca-marche">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-pill-tag">Comment ça marche</div>
+        <h2 class="section-title">Prenez la main sur vos biens en 3 étapes simples</h2>
+        <p class="section-subtitle">
+          Aucun tableau Excel compliqué, aucun calepin froissé. Tout se gère au creux de votre main, même lorsque vous êtes sur le terrain.
+        </p>
+      </div>
+
+      <div class="how-it-works-grid">
+        <!-- Étape 1 -->
+        <div class="step-card reveal">
+          <div class="step-header-row">
+            <div class="step-badge-number">1</div>
+            <div class="step-icon-wrapper">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Étape 1 : Ajoutez vos logements et vos locataires.</h3>
+          <p class="step-desc">
+            Enregistrez en deux minutes vos appartements, villas ou studios, le montant du loyer mensuel et le contact WhatsApp de chaque locataire.
+          </p>
+          <div class="step-highlight">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Fiches complètes enregistrées sur votre téléphone</span>
+          </div>
+        </div>
+
+        <!-- Étape 2 -->
+        <div class="step-card reveal" style="animation-delay: 0.15s;">
+          <div class="step-header-row">
+            <div class="step-badge-number">2</div>
+            <div class="step-icon-wrapper">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Étape 2 : Calculez l'électricité et l'eau en un clic.</h3>
+          <p class="step-desc">
+            Entrez simplement l'ancien et le nouvel index du sous-compteur. L'application applique le tarif unitaire au kWh et calcule la part exacte de chacun.
+          </p>
+          <div class="step-highlight">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Zéro litige, transparence totale</span>
+          </div>
+        </div>
+
+        <!-- Étape 3 -->
+        <div class="step-card reveal" style="animation-delay: 0.3s;">
+          <div class="step-header-row">
+            <div class="step-badge-number">3</div>
+            <div class="step-icon-wrapper">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Étape 3 : Encaissez le loyer et émettez la quittance.</h3>
+          <p class="step-desc">
+            Validez le paiement en espèces, virement ou Mobile Money. Générez aussitôt la quittance numérique et envoyez-la directement par WhatsApp.
+          </p>
+          <div class="step-highlight">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Quittance PDF générée et partagée instantanément</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulateur interactif de sous-compteur -->
+      <div class="simulator-wrapper reveal">
+        <div class="simulator-header">
+          <div class="simulator-title-group">
+            <h3>
+              <span>⚡</span>
+              Testez le calcul de sous-compteur en temps réel
+            </h3>
+            <p style="font-size: 0.875rem; margin-top: 0.25rem;">Voyez à quelle vitesse BailleurPro calcule la facture exacte d'un locataire :</p>
+          </div>
+          <div class="badge-example-tag">Simulateur interactif</div>
+        </div>
+        <div class="simulator-grid">
+          <div class="sim-input-group">
+            <label for="oldIndex">Ancien index (kWh)</label>
+            <input type="number" id="oldIndex" class="sim-input" value="1420" min="0" oninput="calculateSubmeter()">
+          </div>
+          <div class="sim-input-group">
+            <label for="newIndex">Nouvel index (kWh)</label>
+            <input type="number" id="newIndex" class="sim-input" value="1565" min="0" oninput="calculateSubmeter()">
+          </div>
+          <div class="sim-input-group">
+            <label for="kwhRate">Prix unitaire (FCFA / kWh)</label>
+            <input type="number" id="kwhRate" class="sim-input" value="125" min="1" oninput="calculateSubmeter()">
+          </div>
+          <div class="sim-result-card">
+            <div class="sim-result-label">Consommation : <span id="kwhConsumed" style="color: var(--primary); font-weight: 800;">145 kWh</span></div>
+            <div class="sim-result-value" id="totalAmount">18 125 FCFA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 3: FONCTIONNALITÉS (6 CARTES)
+       ========================================================================== -->
+  <section class="section features-section" id="fonctionnalites">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-pill-tag">Fonctionnalités</div>
+        <h2 class="section-title">Pensé pour le terrain et vos besoins réels</h2>
+        <p class="section-subtitle">
+          Six outils pratiques réunis dans une interface intuitive pour vous faire gagner du temps chaque mois.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- 1. Rappels de loyer -->
+        <div class="feature-card reveal">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <h3 class="feature-title">Rappels de loyer</h3>
+          <p class="feature-desc">
+            Ne laissez plus les retards s'accumuler. Recevez des alertes automatiques et relancez poliment par WhatsApp grâce à des messages pré-rédigés en un clic.
+          </p>
+        </div>
+
+        <!-- 2. Calcul des sous-compteurs électriques -->
+        <div class="feature-card reveal" style="animation-delay: 0.1s;">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <h3 class="feature-title">Calcul des sous-compteurs électriques</h3>
+          <p class="feature-desc">
+            Saisissez l'ancien index et le nouveau relevé. L'application calcule immédiatement la consommation en kWh et le montant exact en FCFA à percevoir.
+          </p>
+        </div>
+
+        <!-- 3. Partage de la facture d'eau -->
+        <div class="feature-card reveal" style="animation-delay: 0.2s;">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+          </div>
+          <h3 class="feature-title">Partage de la facture d'eau</h3>
+          <p class="feature-desc">
+            Finies les contestations entre locataires. Répartissez la facture d'eau de façon claire, selon les sous-compteurs individuels ou par forfait convenu.
+          </p>
+        </div>
+
+        <!-- 4. Quittances -->
+        <div class="feature-card reveal" style="animation-delay: 0.1s;">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+          <h3 class="feature-title">Quittances</h3>
+          <p class="feature-desc">
+            Émettez des reçus conformes dès réception du paiement. Téléchargeables au format PDF et partageables directement sur WhatsApp en toute simplicité.
+          </p>
+        </div>
+
+        <!-- 5. Suivi en temps réel -->
+        <div class="feature-card reveal" style="animation-delay: 0.2s;">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <h3 class="feature-title">Suivi en temps réel</h3>
+          <p class="feature-desc">
+            Visualisez immédiatement le taux de recouvrement du mois, le montant total encaissé, les retards de paiement et ce qu'il reste à percevoir en FCFA.
+          </p>
+        </div>
+
+        <!-- 6. Historique archivé -->
+        <div class="feature-card reveal" style="animation-delay: 0.3s;">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+          </div>
+          <h3 class="feature-title">Historique archivé</h3>
+          <p class="feature-desc">
+            Conservez la trace de tous les règlements, relevés d'index et quittances passées. Tout reste accessible même si vous remplacez votre téléphone Android.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 4: OFFRES (TARIFS - 3 CARTES)
+       ========================================================================== -->
+  <section class="section" id="offres">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-pill-tag">Offres & Tarifs</div>
+        <h2 class="section-title">Des tarifs simples et accessibles en Francs CFA</h2>
+        <p class="section-subtitle">
+          Choisissez la formule qui correspond au nombre de logements que vous gérez. Sans engagement, annulez quand vous le souhaitez.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- 1. Essai gratuit -->
+        <div class="pricing-card reveal">
+          <h3 class="pricing-plan-name">Essai gratuit</h3>
+          <div><span class="pricing-plan-scope">Jusqu'à 10 logements</span></div>
+          <div class="pricing-price-box">
+            <div class="pricing-price-amount">0 FCFA</div>
+            <div class="pricing-price-period">30 jours d'essai complet</div>
+          </div>
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Gestion jusqu'à 10 logements</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Calcul automatique eau et électricité</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Émission de quittances de loyer</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Relances de retard par WhatsApp</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Sans carte bancaire requise</span>
+            </li>
+          </ul>
+          <button type="button" class="btn-pricing-secondary" onclick="openModal('signupModal', 'Essai gratuit (0 FCFA)')">
+            Tester gratuitement
+          </button>
+        </div>
+
+        <!-- 2. Standard (RECOMMANDÉ) -->
+        <div class="pricing-card recommended reveal" style="animation-delay: 0.15s;">
+          <div class="recommended-badge">Recommandé</div>
+          <h3 class="pricing-plan-name">Standard</h3>
+          <div><span class="pricing-plan-scope">20 à 25 logements</span></div>
+          <div class="pricing-price-box">
+            <div class="pricing-price-amount">5 000 FCFA</div>
+            <div class="pricing-price-period">par mois • sans engagement</div>
+          </div>
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Gestion de 20 à 25 logements</strong></span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Calcul instantané des sous-compteurs</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Quittances illimitées au format PDF</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Bouton de relance WhatsApp en 1 clic</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Tableau de bord financier complet</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Assistance par WhatsApp prioritaire</span>
+            </li>
+          </ul>
+          <button type="button" class="btn-pricing-primary" onclick="openModal('signupModal', 'Standard (5 000 FCFA/mois)')">
+            Choisir Standard
+          </button>
+        </div>
+
+        <!-- 3. Premium -->
+        <div class="pricing-card reveal" style="animation-delay: 0.3s;">
+          <h3 class="pricing-plan-name">Premium</h3>
+          <div><span class="pricing-plan-scope">Plus de 25 logements</span></div>
+          <div class="pricing-price-box">
+            <div class="pricing-price-amount">15 000 FCFA</div>
+            <div class="pricing-price-period">par mois • sans engagement</div>
+          </div>
+          <ul class="pricing-features-list">
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Plus de 25 logements (illimité)</strong></span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Gestion multi-immeubles et résidences</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Accès pour plusieurs gestionnaires</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Historique et archivage longue durée</span>
+            </li>
+            <li class="pricing-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Accompagnement téléphonique dédié</span>
+            </li>
+          </ul>
+          <button type="button" class="btn-pricing-secondary" onclick="openModal('signupModal', 'Premium (15 000 FCFA/mois)')">
+            Choisir Premium
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 5: TÉMOIGNAGES (3 AVIS D'EXEMPLE)
+       ========================================================================== -->
+  <section class="section testimonials-section" id="temoignages">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-pill-tag">Témoignages</div>
+        <h2 class="section-title">Ce que disent les bailleurs</h2>
+        <p class="section-subtitle">
+          Retours d'expérience concrets de propriétaires qui ont simplifié leur gestion locative en Afrique francophone.
+        </p>
+      </div>
+
+      <div class="testimonials-grid">
+        <!-- Avis 1 (Côte d'Ivoire) -->
+        <div class="testimonial-card reveal">
+          <div class="testimonial-top-row">
+            <div class="testimonial-stars" aria-label="5 étoiles">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <span class="badge-example-tag">Exemple</span>
+          </div>
+          <p class="testimonial-quote">
+            « Exemple : Avant, le calcul des sous-compteurs de courant me prenait un dimanche entier et créait des discussions interminables avec les locataires. Maintenant, je rentre les index sur mon téléphone et le montant sort tout seul. »
+          </p>
+          <div class="testimonial-author-row">
+            <div class="author-avatar-badge">PK</div>
+            <div class="author-info">
+              <h4>M. Patrice K.</h4>
+              <p>Bailleur de 8 logements • Abidjan</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avis 2 (Sénégal) -->
+        <div class="testimonial-card reveal" style="animation-delay: 0.15s;">
+          <div class="testimonial-top-row">
+            <div class="testimonial-stars" aria-label="5 étoiles">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <span class="badge-example-tag">Exemple</span>
+          </div>
+          <p class="testimonial-quote">
+            « Exemple : La relance WhatsApp en un clic m'évite les appels gênants. Les locataires reçoivent directement leur reçu propre sur leur téléphone. C'est simple et très pro. »
+          </p>
+          <div class="testimonial-author-row">
+            <div class="author-avatar-badge">AD</div>
+            <div class="author-info">
+              <h4>Mme Aminata D.</h4>
+              <p>Gestionnaire de studios • Dakar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avis 3 (Cameroun) -->
+        <div class="testimonial-card reveal" style="animation-delay: 0.3s;">
+          <div class="testimonial-top-row">
+            <div class="testimonial-stars" aria-label="5 étoiles">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <span class="badge-example-tag">Exemple</span>
+          </div>
+          <p class="testimonial-quote">
+            « Exemple : J'avais l'habitude de tout noter sur un cahier que je perdais parfois. Avec l'application sur mon Android, je sais exactement qui a payé et qui est en retard, où que je sois. »
+          </p>
+          <div class="testimonial-author-row">
+            <div class="author-avatar-badge">RM</div>
+            <div class="author-info">
+              <h4>M. Roger M.</h4>
+              <p>Propriétaire d'immeuble • Douala</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 6: APPEL À L'ACTION FINAL (CTA)
+       ========================================================================== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-card reveal">
+        <div class="cta-content">
+          <h2 class="cta-title">Simplifiez la gestion de vos biens dès aujourd'hui</h2>
+          <p class="cta-desc">
+            Rejoignez les bailleurs qui gagnent du temps chaque fin de mois. Démarrez votre essai gratuit de 30 jours, sans engagement et sans frais cachés.
+          </p>
+          <button type="button" class="btn-cta-white" onclick="openModal('signupModal')">
+            <span>Commencer gratuitement</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </button>
+          <div class="cta-micro-features">
+            <span>✓ Prise en main immédiate</span>
+            <span>✓ Conçu pour Android</span>
+            <span>✓ Support WhatsApp à votre écoute</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION 7: FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <!-- Logo & Description -->
+        <div class="footer-brand">
+          <div class="logo-pastille" style="display: inline-flex; background: #132247; border-color: #1E3A8A;">
+            <div class="logo-badge-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l7-4 7 4v14"></path>
+                <path d="M9 10h1"></path>
+                <path d="M9 14h1"></path>
+                <path d="M14 10h1"></path>
+                <path d="M14 14h1"></path>
+                <path d="M11 21v-3a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v3"></path>
+              </svg>
+            </div>
+            <div class="logo-text" style="color: #FFFFFF;">Bailleur<span style="color: #60A5FA;">Pro</span></div>
+          </div>
+          <p>
+            L'application moderne et rassurante de gestion locative, calcul de sous-compteurs et quittances pour les bailleurs d'Afrique francophone.
+          </p>
+        </div>
+
+        <!-- Liens d'information réglementaires -->
+        <div>
+          <h4 class="footer-heading">Informations</h4>
+          <ul class="footer-links-list">
+            <li><a class="footer-link" onclick="openModal('mentionsModal')">Mentions légales</a></li>
+            <li><a class="footer-link" onclick="openModal('confidentialiteModal')">Confidentialité</a></li>
+            <li><a class="footer-link" onclick="openModal('cguModal')">Conditions d'utilisation</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact WhatsApp -->
+        <div>
+          <h4 class="footer-heading">Support & Contact</h4>
+          <div class="footer-whatsapp-card">
+            <p><strong>Contact WhatsApp :</strong><br>[NUMÉRO À AJOUTER]</p>
+            <a href="https://wa.me/?text=Bonjour%20BailleurPro,%20je%20souhaite%20des%20renseignements%20sur%20l'application" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="btn-whatsapp-footer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.19.53-1.11 1.04-1.53 1.1-.38.06-.87.08-1.4-.09-.32-.1-.74-.24-1.28-.47-2.26-.98-3.73-3.26-3.85-3.41-.11-.16-.91-1.21-.91-2.31 0-1.1.58-1.64.78-1.87.2-.23.44-.29.59-.29.15 0 .3 0 .43.01.14.01.32-.05.5.38.19.45.64 1.56.7 1.68.06.11.1.25.02.4-.07.14-.11.23-.22.36-.11.13-.23.29-.33.39-.11.11-.22.23-.1.43.12.2.55.9 1.18 1.46.81.72 1.5.95 1.71 1.06.21.11.34.09.46-.05.13-.14.54-.63.69-.85.15-.22.3-.18.5-.11.2.07 1.28.6 1.5.71.22.11.37.16.42.26.06.09.06.56-.13 1.09z"/>
+              </svg>
+              <span>Écrire sur WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de copyright -->
+      <div class="footer-bottom-bar">
+        <div>© 2026 BailleurPro. Tous droits réservés.</div>
+        <div>Conçu avec soin pour les propriétaires et bailleurs d'Afrique francophone.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS: LIGHTBOX, INSCRIPTION, CONNEXION, MENTIONS, CONFIDENTIALITE, CGU
+       ========================================================================== -->
+
+  <!-- 1. Modal Lightbox (Agrandissement de la capture d'écran) -->
+  <div class="modal-overlay" id="lightboxModal" onclick="handleOverlayClick(event, 'lightboxModal')">
+    <div class="modal-dialog modal-dialog-large">
+      <button type="button" class="modal-close-btn" onclick="closeModal('lightboxModal')" aria-label="Fermer">✕</button>
+      <h3 class="modal-title">Tableau de bord BailleurPro</h3>
+      <p class="modal-desc">Aperçu réel de l'application sur smartphone Android (Résidence Les Palmiers, 8 logements, calculs eau & électricité et relance WhatsApp).</p>
+      <div class="lightbox-img-wrapper">
+        <img src="bailleurpro-app-screenshot.jpg" alt="Agrandissement de l'application BailleurPro" id="lightboxScreenImg">
+      </div>
+      <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+        <button type="button" class="btn-primary-pill" onclick="closeModal('lightboxModal'); openModal('signupModal')">
+          Tester gratuitement sur mon téléphone
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Modal Inscription / Essai Gratuit -->
+  <div class="modal-overlay" id="signupModal" onclick="handleOverlayClick(event, 'signupModal')">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeModal('signupModal')" aria-label="Fermer">✕</button>
+      <div class="logo-pastille" style="margin-bottom: 1rem;">
+        <div class="logo-badge-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path></svg></div>
+        <div class="logo-text">Bailleur<span>Pro</span></div>
+      </div>
+      <h3 class="modal-title">Démarrez votre essai gratuit</h3>
+      <p class="modal-desc">30 jours offerts pour tester l'application sans engagement. Aucune carte bancaire requise.</p>
+      
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label class="form-label" for="signupName">Nom et Prénom</label>
+          <input type="text" id="signupName" class="form-input" placeholder="Ex: M. Patrice Kouamé" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signupPhone">Numéro WhatsApp (avec indicatif)</label>
+          <input type="tel" id="signupPhone" class="form-input" placeholder="Ex: +225 07 00 00 00 00" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signupCount">Nombre de logements à gérer</label>
+          <select id="signupCount" class="form-select">
+            <option value="1-5">1 à 5 logements</option>
+            <option value="6-10" selected>6 à 10 logements (Essai gratuit)</option>
+            <option value="11-25">11 à 25 logements (Standard)</option>
+            <option value="26+">Plus de 25 logements (Premium)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signupPlan">Formule choisie</label>
+          <input type="text" id="signupPlan" class="form-input" value="Essai gratuit (30 jours)" readonly style="background: #F8FAFC;">
+        </div>
+        <button type="submit" class="btn-primary-pill" style="width: 100%; min-height: 48px; margin-top: 0.5rem;">
+          Créer mon compte BailleurPro
+        </button>
+        <p style="font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 0.75rem;">
+          Vos données restent strictement confidentielles et ne sont jamais partagées.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Modal Se Connecter -->
+  <div class="modal-overlay" id="loginModal" onclick="handleOverlayClick(event, 'loginModal')">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeModal('loginModal')" aria-label="Fermer">✕</button>
+      <div class="logo-pastille" style="margin-bottom: 1rem;">
+        <div class="logo-badge-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path></svg></div>
+        <div class="logo-text">Bailleur<span>Pro</span></div>
+      </div>
+      <h3 class="modal-title">Espace Bailleur</h3>
+      <p class="modal-desc">Connectez-vous à votre espace de gestion pour retrouver vos logements et quittances.</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="loginPhone">Numéro de téléphone / WhatsApp</label>
+          <input type="tel" id="loginPhone" class="form-input" placeholder="+225..." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPass">Mot de passe ou Code secret</label>
+          <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary-pill" style="width: 100%; min-height: 48px;">
+          Se connecter
+        </button>
+        <div style="text-align: center; margin-top: 1rem;">
+          <a href="#" style="font-size: 0.8125rem; color: var(--primary-vibrant); text-decoration: none;" onclick="alert('Un code de réinitialisation vous sera envoyé par WhatsApp.'); return false;">Mot de passe oublié ?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal Mentions Légales -->
+  <div class="modal-overlay" id="mentionsModal" onclick="handleOverlayClick(event, 'mentionsModal')">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeModal('mentionsModal')" aria-label="Fermer">✕</button>
+      <h3 class="modal-title">Mentions Légales</h3>
+      <div class="modal-legal-body">
+        <h4>1. Éditeur de l'application</h4>
+        <p>L'application « BailleurPro » est une solution logicielle conçue pour assister les propriétaires et gestionnaires immobiliers indépendants dans la gestion de leurs locations et charges associées en Afrique francophone.</p>
+        
+        <h4>2. Hébergement</h4>
+        <p>Les données sont hébergées sur des serveurs sécurisés garantissant la haute disponibilité, l'intégrité et la confidentialité des informations saisies par les utilisateurs.</p>
+
+        <h4>3. Propriété intellectuelle</h4>
+        <p>L'ensemble des composants, visuels originaux, algorithmes de calcul de charges et logos propres à BailleurPro sont protégés par les lois en vigueur relatives à la propriété intellectuelle.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Modal Confidentialité -->
+  <div class="modal-overlay" id="confidentialiteModal" onclick="handleOverlayClick(event, 'confidentialiteModal')">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeModal('confidentialiteModal')" aria-label="Fermer">✕</button>
+      <h3 class="modal-title">Politique de Confidentialité</h3>
+      <div class="modal-legal-body">
+        <h4>1. Données collectées</h4>
+        <p>BailleurPro ne collecte que les informations strictement nécessaires au bon fonctionnement de vos comptes : coordonnées du bailleur, liste des logements gérés, index de compteurs et quittances générées.</p>
+
+        <h4>2. Utilisation et protection</h4>
+        <p>Vos données et celles de vos locataires restent votre propriété exclusive. Elles ne sont jamais revendues, louées ou cédées à des tiers. Les communications WhatsApp sont initiées directement depuis votre application personnelle.</p>
+
+        <h4>3. Vos droits</h4>
+        <p>Conformément aux réglementations sur la protection des données personnelles, vous disposez d'un droit permanent d'accès, de rectification et de suppression de vos informations en contactant le support.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Modal Conditions d'Utilisation -->
+  <div class="modal-overlay" id="cguModal" onclick="handleOverlayClick(event, 'cguModal')">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeModal('cguModal')" aria-label="Fermer">✕</button>
+      <h3 class="modal-title">Conditions d'Utilisation</h3>
+      <div class="modal-legal-body">
+        <h4>1. Objet du service</h4>
+        <p>BailleurPro fournit des outils d'aide à la gestion locative (calcul d'index de sous-compteurs, suivi d'encaissements en FCFA, génération de quittances numériques et rappels de loyer).</p>
+
+        <h4>2. Responsabilité</h4>
+        <p>Le bailleur reste responsable de l'exactitude des index saisis et du respect de la législation locale en matière de baux d'habitation dans son pays d'exercice.</p>
+
+        <h4>3. Tarifs et résiliation</h4>
+        <p>Les formules sont sans engagement de durée. L'utilisateur peut mettre fin à son abonnement à tout moment sans pénalité.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT INTÉGRÉ
+       ========================================================================== -->
+  <script>
+    // Gestion du menu hamburger mobile (Angle haut droite)
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+
+    if (mobileMenuBtn && mobileDrawer) {
+      mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = mobileDrawer.classList.toggle('open');
+        mobileMenuBtn.classList.toggle('active', isOpen);
+        mobileMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Fermeture lors d'un clic extérieur
+      document.addEventListener('click', function(e) {
+        if (!mobileDrawer.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          closeMobileMenu();
+        }
+      });
+    }
+
+    function closeMobileMenu() {
+      if (mobileDrawer && mobileMenuBtn) {
+        mobileDrawer.classList.remove('open');
+        mobileMenuBtn.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    // Gestionnaire des modals
+    function openModal(modalId, planName) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        if (planName && modalId === 'signupModal') {
+          const planInput = document.getElementById('signupPlan');
+          if (planInput) planInput.value = planName;
+        }
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function handleOverlayClick(event, modalId) {
+      if (event.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    // Touche Échap pour fermer les modals
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal-overlay.open');
+        openModals.forEach(m => m.classList.remove('open'));
+        document.body.style.overflow = '';
+        closeMobileMenu();
+      }
+    });
+
+    // Calculateur interactif de sous-compteur
+    function calculateSubmeter() {
+      const oldVal = parseFloat(document.getElementById('oldIndex').value) || 0;
+      const newVal = parseFloat(document.getElementById('newIndex').value) || 0;
+      const rate = parseFloat(document.getElementById('kwhRate').value) || 0;
+
+      const consumed = Math.max(0, newVal - oldVal);
+      const total = consumed * rate;
+
+      document.getElementById('kwhConsumed').textContent = consumed.toLocaleString('fr-FR') + ' kWh';
+      document.getElementById('totalAmount').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    // Gestion des formulaires démo
+    function handleSignup(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value;
+      const phone = document.getElementById('signupPhone').value;
+      alert(`Félicitations ${name} ! Votre compte d'essai BailleurPro a été créé avec succès. Vos identifiants ont été envoyés par WhatsApp au ${phone}.`);
+      closeModal('signupModal');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      alert("Connexion réussie ! Bienvenue sur votre tableau de bord BailleurPro.");
+      closeModal('loginModal');
+    }
+
+    // Animations au scroll (IntersectionObserver)
+    document.addEventListener('DOMContentLoaded', function() {
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.12,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        reveals.forEach(el => observer.observe(el));
+      } else {
+        reveals.forEach(el => el.classList.add('active'));
+      }
+    });
+  </script>
+</body>
+</html>
